@@ -13,7 +13,7 @@ def main():
     print("Linting Results:")
     print(run_linter(file_path))
 
-    print("\nSecurity Scan Results:")
+    print("\nSecurity Scan Results are:")
     print(run_security_check(file_path))
 
 if __name__ == "__main__":
