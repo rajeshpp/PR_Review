@@ -47,6 +47,9 @@ DIFF_HUNKS = {file["filename"]: file["patch"] for file in PR_FILES}
 # Parse Flake8 linting results
 def parse_flake8_report():
     comments = []
+    with open("flake8_report.json") as f:
+        data = json.load(f)
+        print(data)
     try:
         with open("flake8_report.json") as f:
             data = json.load(f)
