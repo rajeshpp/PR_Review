@@ -25,18 +25,24 @@ jobs:
       - name: Run Linter (Flake8)
         run: |
           echo "Running Flake8 Linter..."
-          flake8 --format=json --output-file=flake8_report.json . || (
-            echo "::warning:: Flake8 found issues. Check flake8_report.json for details."
-            exit 0
-          )
+          flake8 --format=json --output-file=flake8_report.json . || echo "FLAKE8_FAILED=true" >> $GITHUB_ENV
 
       - name: Run Security Scan (Bandit)
-        run: bandit -r . -f json -o bandit_report.json || true
+        run: |
+          echo "Running Bandit Security Scan..."
+          bandit -r . -f json -o bandit_report.json || echo "BANDIT_FAILED=true" >> $GITHUB_ENV
 
-      - name: Debug GitHub Environment
-        run: echo "GITHUB_TOKEN is available"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Show Flake8 Report
+        if: always()  # Ensure this runs even if the previous step fails
+        run: |
+          echo "🔍 Flake8 Report:"
+          cat flake8_report.json || echo "No Flake8 report found."
+
+      - name: Show Bandit Report
+        if: always()
+        run: |
+          echo "🔍 Bandit Report:"
+          cat bandit_report.json || echo "No Bandit report found."
 
       - name: Run Review Bot
         env:
@@ -44,3 +50,12 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           PR_NUMBER: ${{ env.PR_NUMBER }}
         run: python .github/workflows/review_bot.py
+
+      - name: Final Job Status
+        run: |
+          if [[ "$FLAKE8_FAILED" == "true" || "$BANDIT_FAILED" == "true" ]]; then
+            echo "❌ Linting or Security scan failed. Check the logs above."
+            exit 1
+          else
+            echo "✅ All checks passed."
+          fi
