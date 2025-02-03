@@ -25,25 +25,12 @@ jobs:
       - name: Run Linter (Flake8)
         run: |
           echo "Running Flake8 Linter..."
-          flake8 --format=json --output-file=flake8_report.json . || echo "FLAKE8_FAILED=true" >> $GITHUB_ENV
+          flake8 . || echo "FLAKE8_FAILED=true" >> $GITHUB_ENV
 
       - name: Run Security Scan (Bandit)
         run: |
           echo "Running Bandit Security Scan..."
-          bandit -r . -f json -o bandit_report.json || echo "BANDIT_FAILED=true" >> $GITHUB_ENV
-
-      - name: Show Flake8 Report
-        if: always()
-        run: |
-          echo "🔍 Flake8 Report:"
-          jq . flake8_report.json || cat flake8_report.json || echo "No Flake8 report found."
-
-      - name: Show Bandit Report
-        if: always()
-        run: |
-          echo "🔍 Bandit Report:"
-          jq . bandit_report.json || cat bandit_report.json || echo "No Bandit report found."
-
+          bandit -r . || echo "BANDIT_FAILED=true" >> $GITHUB_ENV
 
       - name: Run Review Bot
         env:
