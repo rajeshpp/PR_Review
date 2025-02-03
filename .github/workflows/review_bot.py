@@ -59,6 +59,7 @@ def parse_flake8_report():
 
         for file, errors in data.items():
             print(1, file, errors)
+            file = file.split('/')[-1]
             if file.split('/')[-1] in DIFF_HUNKS:  # Ensure file exists in PR
                 print(2, DIFF_HUNKS)
                 for error in errors:
