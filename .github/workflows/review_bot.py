@@ -33,7 +33,7 @@ def parse_flake8_report():
                             "path": file,
                             "position": 1,
                             "line_number": error['line_number'],
-                            "body": f"[Flake8] {error['message']}",
+                            "body": f"[Flake8] {error['text']}",
                         }
                     )
     except (FileNotFoundError, json.JSONDecodeError):
