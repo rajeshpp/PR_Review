@@ -137,4 +137,4 @@ if __name__ == "__main__":
     if comments:
         post_review_comments(comments)
     else:
-        post_general_pr_comment("🎉 No linting or security issues found! Great job! 🚀")
+        post_general_pr_comment("🎉 No linting or security issues found! Great job! 🚀") 
