@@ -1,4 +1,4 @@
-# Sample program just to integrate with Github PR  
+# Sample program just to integrate with Github PR   
 
 def loop_me(n):
     for val in range(n):
