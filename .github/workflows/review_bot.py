@@ -10,7 +10,7 @@ PR_NUMBER = os.getenv("PR_NUMBER")
 HEADERS = {
     "Authorization": f"token {GITHUB_TOKEN}",
     "Accept": "application/vnd.github.v3+json",
-} 
+}  
 
 
 def get_pr_files():
