@@ -130,6 +130,8 @@ def post_general_pr_comment(comment):
 if __name__ == "__main__":
     comments = parse_flake8_report() #+ parse_bandit_report()
 
+    print(comments)
+
     if comments:
         post_review_comments(comments)
     else:
