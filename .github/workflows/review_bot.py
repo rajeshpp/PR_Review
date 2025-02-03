@@ -23,8 +23,6 @@ def get_pr_files():
 def parse_flake8_report():
     """Parses Flake8 linting results and generates comments."""
     comments = []
-    with open("/home/runner/work/PR_Review/PR_Review/flake8_report.json") as f:
-        print(f.)
     try:
         with open("/home/runner/work/PR_Review/PR_Review/flake8_report.json") as f:
             data = json.load(f)
