@@ -5,7 +5,7 @@ def run_linter(file_path):
     result = subprocess.run(["flake8", file_path],
                             capture_output=True, text=True)
     return result.stdout
- 
+  
 
 def run_security_check(file_path):
     result = subprocess.run(["bandit", "-r", file_path],
