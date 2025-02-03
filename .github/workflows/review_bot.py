@@ -59,6 +59,7 @@ def parse_flake8_report():
 
         for file, errors in data.items():
             print(1, file, errors)
+            print(1.1 DIFF_HUNKS)
             if file in DIFF_HUNKS:  # Ensure file exists in PR
                 print(2, DIFF_HUNKS)
                 for error in errors:
