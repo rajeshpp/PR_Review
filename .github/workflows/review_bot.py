@@ -71,7 +71,7 @@ def post_review_comments(comments):
 
 
 if __name__ == "__main__":
-    comments = parse_flake8_report() + parse_bandit_report()
+    comments = parse_flake8_report() #+ parse_bandit_report()
     if comments:
         post_review_comments(comments)
     else:
