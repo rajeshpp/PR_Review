@@ -39,11 +39,20 @@ jobs:
           PR_NUMBER: ${{ env.PR_NUMBER }}
         run: python .github/workflows/review_bot.py
 
-      - name: Final Job Status
+      - name: Final Job Status for Linting
         run: |
-          if [[ "$FLAKE8_FAILED" == "true" || "$BANDIT_FAILED" == "true" ]]; then
-            echo "❌ Linting or Security scan failed. Check the logs above."
+          if [[ "$FLAKE8_FAILED" == "true" ]]; then
+            echo "❌ Linting failed. Check the logs above."
             exit 1
           else
-            echo "✅ All checks passed."
+            echo "✅ Linting check passed."
+          fi
+
+      - name: Final Job Status Security Scan
+        run: |
+          if [[ "$BANDIT_FAILED" == "true" ]]; then
+            echo "❌ Security scan failed. Check the logs above."
+            exit 1
+          else
+            echo "✅ Security Scan passed."
           fi
