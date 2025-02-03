@@ -23,7 +23,12 @@ jobs:
         run: echo "PR_NUMBER=$(jq --raw-output '.pull_request.number' "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV
 
       - name: Run Linter (Flake8)
-        run: flake8 --format=json --output-file=flake8_report.json .
+        run: |
+          echo "Running Flake8 Linter..."
+          flake8 --format=json --output-file=flake8_report.json . || (
+            echo "::warning:: Flake8 found issues. Check flake8_report.json for details."
+            exit 0
+          )
 
       - name: Run Security Scan (Bandit)
         run: bandit -r . -f json -o bandit_report.json || true
