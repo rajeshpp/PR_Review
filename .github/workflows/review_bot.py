@@ -1,10 +1,11 @@
-import json
 import os
+import json
 import requests
 
+# GitHub environment variables
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 REPO = os.getenv("GITHUB_REPOSITORY")
-PR_NUMBER = os.getenv("GITHUB_EVENT_PULL_REQUEST_NUMBER")
+PR_NUMBER = os.getenv("PR_NUMBER")
 
 HEADERS = {
     "Authorization": f"token {GITHUB_TOKEN}",
@@ -12,47 +13,55 @@ HEADERS = {
 }
 
 def get_pr_files():
-    """Fetches changed files in the PR"""
+    """Fetches changed files in the PR."""
     url = f"https://api.github.com/repos/{REPO}/pulls/{PR_NUMBER}/files"
     response = requests.get(url, headers=HEADERS)
     return response.json()
 
 def parse_flake8_report():
-    """Parses Flake8 linting results"""
+    """Parses Flake8 linting results and generates comments."""
     comments = []
-    with open("flake8_report.json") as f:
-        data = json.load(f)
-        for file, errors in data.items():
-            for error in errors:
-                comments.append({
-                    "path": file,
-                    "position": 1,  # GitHub requires a valid line number
-                    "body": f"[Flake8] {error['message']} (line {error['line_number']})"
-                })
+    try:
+        with open("flake8_report.json") as f:
+            data = json.load(f)
+            for file, errors in data.items():
+                for error in errors:
+                    comments.append({
+                        "path": file,
+                        "position": 1,  # GitHub requires a valid line number
+                        "body": f"[Flake8] {error['message']} (line {error['line_number']})"
+                    })
+    except (FileNotFoundError, json.JSONDecodeError):
+        print("Flake8 report not found or invalid format.")
     return comments
 
 def parse_bandit_report():
-    """Parses Bandit security scan results"""
+    """Parses Bandit security scan results and generates comments."""
     comments = []
-    with open("bandit_report.json") as f:
-        data = json.load(f)
-        for issue in data.get("results", []):
-            comments.append({
-                "path": issue["filename"],
-                "position": 1,
-                "body": f"[Bandit] {issue['issue_text']} (Severity: {issue['issue_severity']})"
-            })
+    try:
+        with open("bandit_report.json") as f:
+            data = json.load(f)
+            for issue in data.get("results", []):
+                comments.append({
+                    "path": issue["filename"],
+                    "position": 1,
+                    "body": f"[Bandit] {issue['issue_text']} (Severity: {issue['issue_severity']})"
+                })
+    except (FileNotFoundError, json.JSONDecodeError):
+        print("Bandit report not found or invalid format.")
     return comments
 
 def post_review_comments(comments):
-    """Posts review comments to the PR"""
+    """Posts review comments to the PR using the GitHub API."""
     url = f"https://api.github.com/repos/{REPO}/pulls/{PR_NUMBER}/comments"
     for comment in comments:
-        requests.post(url, headers=HEADERS, json=comment)
+        response = requests.post(url, headers=HEADERS, json=comment)
+        if response.status_code != 201:
+            print(f"Failed to post comment: {response.text}")
 
 if __name__ == "__main__":
     comments = parse_flake8_report() + parse_bandit_report()
     if comments:
         post_review_comments(comments)
     else:
-        print("No issues found.")
+        print("No issues found, skipping comments.")
