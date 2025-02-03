@@ -27,8 +27,26 @@ jobs:
           echo "Running Flake8 Linter..."
           flake8 . || echo "FLAKE8_FAILED=true" >> $GITHUB_ENV
 
+      - name: Print Current Working Directory
+        run: |
+          echo "Current working directory:"
+          pwd
+
       - name: Run Linter (Flake8)
-        run: python -m flake8 --format=json --output-file=flake8_report.json .
+        run: |
+          echo "Running Flake8 Linter..."
+          python -m flake8 --format=json --output-file=flake8_report.json . || true
+          
+      - name: Check if Flake8 Report is Generated
+        run: |
+          echo "Checking for generated Flake8 report..."
+          if [ -f flake8_report.json ]; then
+            echo "✅ Flake8 report generated successfully at $(pwd)/flake8_report.json."
+          else
+            echo "❌ Flake8 report not found at $(pwd)/flake8_report.json!"
+            exit 1
+          fi
+
 
       - name: Run Security Scan (Bandit)
         run: |
