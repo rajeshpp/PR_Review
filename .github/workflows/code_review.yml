@@ -17,7 +17,7 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install flake8 bandit requests
+        run: pip install flake8 bandit requests flake8-json
 
       - name: Extract PR Number
         run: echo "PR_NUMBER=$(jq --raw-output '.pull_request.number' "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV
