@@ -1,6 +1,5 @@
 import subprocess
 
-
 def run_linter(file_path):
     result = subprocess.run(["flake8", file_path],
                             capture_output=True, text=True)
