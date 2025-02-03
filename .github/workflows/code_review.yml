@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened, synchronize]
 
+permissions:
+  pull-requests: write  # Allows posting comments on PRs
+  contents: read        # Allows reading repo content
+
 jobs:
   review:
     runs-on: ubuntu-latest
