@@ -58,8 +58,11 @@ def parse_flake8_report():
             data = json.load(f)
 
         for file, errors in data.items():
+            print(1, file, errors)
             if file in DIFF_HUNKS:  # Ensure file exists in PR
+                print(2, DIFF_HUNKS)
                 for error in errors:
+                    print(3, error)
                     comments.append(
                         {
                             "path": file,
@@ -129,8 +132,6 @@ def post_general_pr_comment(comment):
 
 if __name__ == "__main__":
     comments = parse_flake8_report() #+ parse_bandit_report()
-
-    print(comments)
 
     if comments:
         post_review_comments(comments)
